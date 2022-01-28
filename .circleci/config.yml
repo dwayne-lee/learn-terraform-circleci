@@ -70,9 +70,13 @@ workflows:
           requires:
             - plan-apply
       - apply:
+          context:
+            - Terraform
           requires:
             - hold-apply
       - plan-destroy:
+          context:
+            - Terraform
           requires:
             - apply
       - hold-destroy:
@@ -80,5 +84,7 @@ workflows:
           requires:
             - plan-destroy
       - destroy:
+          context:
+            - Terraform
           requires:
             - hold-destroy

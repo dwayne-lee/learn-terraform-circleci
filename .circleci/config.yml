@@ -1,5 +1,6 @@
 version: 2
-
+orbs:
+  slack: circleci/slack@4.1
 jobs:
   plan-apply:
     working_directory: /tmp/project
@@ -27,6 +28,15 @@ jobs:
           name: terraform
           command: |
             terraform apply -auto-approve tfapply
+      - slack/notify:
+          event: fail
+          channel: C030C9JFXPS
+          mentions: '@Dwayne'
+          template: basic_fail_1
+      - slack/notify:
+          event: pass
+          channel: C030C9JFXPS
+          template: success_tagged_deploy_1
       - persist_to_workspace:
           root: .
           paths:
@@ -65,10 +75,16 @@ workflows:
       - plan-apply:
           context:
             - Terraform
+      - slack/on-hold:
+          context:
+            - Terraform
+          requires:
+            - plan-apply
       - hold-apply:
           type: approval
           requires:
             - plan-apply
+            - slack/on-hold
       - apply:
           context:
             - Terraform

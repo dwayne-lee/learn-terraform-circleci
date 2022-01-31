@@ -5,13 +5,12 @@ jobs:
   plan-apply:
     working_directory: /tmp/project
     docker:
-      - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
+      - image: 'cimg/base:stable'
     steps:
       - checkout
       - run:
           name: terraform init & plan
           command: |
-            apk add -U --no-cache curl jq
             terraform init -input=false
             terraform plan -out tfapply -var-file variables.tfvars
       - persist_to_workspace:
@@ -21,7 +20,7 @@ jobs:
 
   apply:
     docker:
-      - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
+      - image: 'cimg/base:stable'
     steps:
       - attach_workspace:
           at: .
@@ -45,7 +44,7 @@ jobs:
 
   plan-destroy:
     docker:
-      - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
+      - image: 'cimg/base:stable'
     steps:
       - attach_workspace:
           at: .
@@ -60,7 +59,7 @@ jobs:
 
   destroy:
     docker:
-      - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
+      - image: 'cimg/base:stable'
     steps:
       - attach_workspace:
           at: .

@@ -5,7 +5,7 @@ jobs:
   plan-apply:
     working_directory: /tmp/project
     docker:
-      - image: 'cimg/base:stable'
+      - image: 'hashicorp/terraform:light'
     steps:
       - checkout
       - run:
@@ -20,13 +20,14 @@ jobs:
 
   apply:
     docker:
-      - image: 'cimg/base:stable'
+      - image: 'hashicorp/terraform:light'
     steps:
       - attach_workspace:
           at: .
       - run:
           name: terraform
           command: |
+            apk --no-cache add curl jq
             terraform apply -auto-approve tfapply
       - slack/notify:
           event: fail
@@ -44,7 +45,7 @@ jobs:
 
   plan-destroy:
     docker:
-      - image: 'cimg/base:stable'
+      - image: 'hashicorp/terraform:light'
     steps:
       - attach_workspace:
           at: .
@@ -59,7 +60,7 @@ jobs:
 
   destroy:
     docker:
-      - image: 'cimg/base:stable'
+      - image: 'hashicorp/terraform:light'
     steps:
       - attach_workspace:
           at: .
